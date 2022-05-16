@@ -56,15 +56,11 @@ export default function ChangePassword() {
           <Typography component="h1" variant="h5">
             Change Password
           </Typography>
-          <Box component="form" onSubmit={ChangePassword} noValidate sx={{ mt: 1 }}>
+          <Box component="form" noValidate sx={{ mt: 1 }}>
           <TextField
               margin="normal"
               required
               fullWidth
-              name="currentPassword"
-              label="Current Password"
-              type="currentPassword"
-              id="currentPassword"
               autoComplete="current-password"
               onChange={e => setCurrentPassword(e.target.value)}
             />
@@ -72,9 +68,6 @@ export default function ChangePassword() {
               margin="normal"
               required
               fullWidth
-              name="newPassword"
-              label="New Password"
-              type="nwePassword"
               id="newPassword"
               onChange={e => setNewPassword(e.target.value)}
             />
@@ -82,9 +75,6 @@ export default function ChangePassword() {
               margin="normal"
               required
               fullWidth
-              name="verifyPassword"
-              label="Verify Password"
-              type="verifyPassword"
               id="verifyPassword"
               onChange={e => setVerifyPassword(e.target.value)}
             />
@@ -93,7 +83,6 @@ export default function ChangePassword() {
               label="Remember me"
             />
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
