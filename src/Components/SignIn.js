@@ -33,16 +33,24 @@ export default function SignIn() {
 
   const [password, setPassword] = useState()
   const [userName, setUserName] = useState()
+  const [textError, setTextError] = useState(false)
   const verifyUser = (event) =>{
-    event.preventDefault()
-    console.log("submit clicked")
-    const obj = {
-      email : userName,
-      password : password,
+    if(!textError && password.length > 4){
+      const obj = {
+        email : userName,
+        password : password,
+      }
+      dal.verifyUser(obj)
+      .then(res => console.log(res))
+      .catch(err => console.log(err))
     }
-    dal.verifyUser(obj)
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
+  }
+  const validEmail = ()=>{
+    let mailFormat =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if(userName.match(mailFormat))
+        setTextError(false)
+    else
+        setTextError(true)
   }
 
   return (
@@ -63,35 +71,35 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={verifyUser} noValidate sx={{ mt: 1 }}>
+          <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
+              label = "email"
               id="email"
-              label="Email Address"
-              name="email"
               autoComplete="email"
-              autoFocus
+              
               onChange={e => setUserName(e.target.value)}
+              onBlur = {validEmail}
+              error = {textError}
             />
             <TextField
               margin="normal"
-              required
+              required = {true}
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
+              label = "Password"
               id="password"
               autoComplete="current-password"
               onChange={e => setPassword(e.target.value)}
+              // color = 'error'
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             />
             <Button
-              type="submit"
+              onClick={verifyUser}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}

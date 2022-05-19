@@ -29,10 +29,11 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-const ForgotPassword =  () => {
+const ForgotPassword =  (props) => {
   const [userName, setUserName] = useState()
   const [userNotFound, setUserNotFound] = useState(false)
   const [toggleChangePassword, setToggleChangePassword] = useState(false)
+  const [responseEmail, setResponseEmail] = useState()
   const resetPass = async (event) =>{
     try{
       console.log(event)
@@ -44,8 +45,11 @@ const ForgotPassword =  () => {
         if(response.status === 404)
           setUserNotFound(true)
         else{
+          setResponseEmail(response.data.email)
+          
           setUserNotFound(false)
           setToggleChangePassword(true)
+          props.email = responseEmail
         }
         
     }
@@ -59,7 +63,7 @@ const ForgotPassword =  () => {
       {
         toggleChangePassword ?
           <ChangePassword /> :
-          
+
           <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -87,6 +91,7 @@ const ForgotPassword =  () => {
                   margin="normal"
                   required
                   fullWidth
+                  label = "Email"
                   id="email"
                   autoComplete="email"
                   autoFocus

@@ -28,14 +28,23 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function ChangePassword() {
+export default function ChangePassword(props) {
 
     const [currentPassword, setCurrentPassword] = useState()
     const [newPassword, setNewPassword] = useState()
     const [VerifyPassword, setVerifyPassword] = useState()
-  
-  const ChangePassword = (event) =>{
-   
+    const [email , setEmail] = useState(props.email)
+    
+  const changePassword = (event) =>{
+    const obj = {
+        email : email,
+        newPassword : newPassword,
+    }
+  }
+
+  const validPass = () =>{
+      
+      
   }
 
   return (
@@ -59,8 +68,9 @@ export default function ChangePassword() {
           <Box component="form" noValidate sx={{ mt: 1 }}>
           <TextField
               margin="normal"
-              required
+              required = {validPass}
               fullWidth
+              label = "Current Password"
               autoComplete="current-password"
               onChange={e => setCurrentPassword(e.target.value)}
             />
@@ -68,13 +78,16 @@ export default function ChangePassword() {
               margin="normal"
               required
               fullWidth
+              label = "New Password"
               id="newPassword"
-              onChange={e => setNewPassword(e.target.value)}
+              ref={setNewPassword}
+            //   onChange={e => setNewPassword(e.target.value)}
             />
              <TextField
               margin="normal"
               required
               fullWidth
+              label = "Verify Password"
               id="verifyPassword"
               onChange={e => setVerifyPassword(e.target.value)}
             />
@@ -86,6 +99,7 @@ export default function ChangePassword() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick = {changePassword}
             >
               Change Password
             </Button>

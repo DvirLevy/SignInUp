@@ -32,6 +32,18 @@ const resetPass = async (obj) =>{
     }
 }
 
+const changePassword = async (obj) =>{
+    try{
+        return await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/changePassword`,obj)
+        
+        
+    }
+    catch(error){
+        return error
+    }
+}
+
+
 
 
 // eslint-disable-next-line

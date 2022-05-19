@@ -79,16 +79,14 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={createUser}  sx={{ mt: 3 }}>
+          <Box component="form" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
-                  name="firstName"
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
                   autoFocus
                   onChange = {e => setFirstName(e.target.value)}
                 />
@@ -98,8 +96,6 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
-                  name="lastName"
                   autoComplete="family-name"
                   onChange = {e => setLastName(e.target.value)}
                 />
@@ -109,8 +105,6 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
-                  name="email"
                   autoComplete="email"
                   onChange={e => setEmail(e.target.value)}
                 />
@@ -119,9 +113,6 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
                   id="password"
                   autoComplete="new-password"
                   onChange = {e => setPassword(e.target.value)}
@@ -136,11 +127,10 @@ export default function SignUp() {
               </Grid>
             </Grid>
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }} 
-                     
+              onClick={createUser}
             >
               Sign Up
             </Button>
