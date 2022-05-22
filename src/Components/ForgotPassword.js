@@ -62,7 +62,7 @@ const ForgotPassword =  (props) => {
     <div className='uiChanger'>
       {
         toggleChangePassword ?
-          <ChangePassword /> :
+          <ChangePassword data = {responseEmail}/> :
 
           <ThemeProvider theme={theme}>
           <Container component="main" maxWidth="xs">

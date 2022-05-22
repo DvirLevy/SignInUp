@@ -32,19 +32,28 @@ export default function ChangePassword(props) {
 
     const [currentPassword, setCurrentPassword] = useState()
     const [newPassword, setNewPassword] = useState()
-    const [VerifyPassword, setVerifyPassword] = useState()
-    const [email , setEmail] = useState(props.email)
+    const [verifyPassword, setVerifyPassword] = useState()
+    const [email , setEmail] = useState(props.data)
+    const [textError, setTextError] = useState(false)
     
-  const changePassword = (event) =>{
+  const changePassword = () =>{
+    console.log("entered to changePassword")
     const obj = {
         email : email,
         newPassword : newPassword,
     }
+    dal.changePassword(obj)
   }
 
-  const validPass = () =>{
-      
-      
+  const passwordMatcher = () =>{
+      if(!(newPassword === verifyPassword)){
+        setTextError(true)
+        return false
+      }
+      else{
+        setTextError(false)
+        return true
+      }
   }
 
   return (
@@ -68,7 +77,7 @@ export default function ChangePassword(props) {
           <Box component="form" noValidate sx={{ mt: 1 }}>
           <TextField
               margin="normal"
-              required = {validPass}
+              required
               fullWidth
               label = "Current Password"
               autoComplete="current-password"
@@ -80,8 +89,7 @@ export default function ChangePassword(props) {
               fullWidth
               label = "New Password"
               id="newPassword"
-              ref={setNewPassword}
-            //   onChange={e => setNewPassword(e.target.value)}
+              onChange={e => setNewPassword(e.target.value)}
             />
              <TextField
               margin="normal"
@@ -90,6 +98,8 @@ export default function ChangePassword(props) {
               label = "Verify Password"
               id="verifyPassword"
               onChange={e => setVerifyPassword(e.target.value)}
+              onBlur={passwordMatcher}
+              error = {textError}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -100,6 +110,7 @@ export default function ChangePassword(props) {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               onClick = {changePassword}
+              disabled = {textError}
             >
               Change Password
             </Button>

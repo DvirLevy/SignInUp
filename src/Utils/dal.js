@@ -47,4 +47,4 @@ const changePassword = async (obj) =>{
 
 
 // eslint-disable-next-line
-export default { createNewUser , verifyUser , resetPass } 
+export default { createNewUser , verifyUser , resetPass, changePassword } 
