@@ -33,16 +33,21 @@ export default function ChangePassword(props) {
     const [currentPassword, setCurrentPassword] = useState()
     const [newPassword, setNewPassword] = useState()
     const [verifyPassword, setVerifyPassword] = useState()
-    const [email , setEmail] = useState(props.data)
     const [textError, setTextError] = useState(false)
     
-  const changePassword = () =>{
-    console.log("entered to changePassword")
+  const changePassword = async (e) =>{
+    
     const obj = {
-        email : email,
+        password : currentPassword,
+        email : props.data,
         newPassword : newPassword,
     }
-    dal.changePassword(obj)
+    const updated = await dal.changePassword(obj)
+    
+    if(updated.data.result)
+      e.view.location.pathname = '/'
+    else
+      e.view.location.pathname = '/resetpassword'
   }
 
   const passwordMatcher = () =>{
