@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import dal from '../Utils/dal'
+import { Alert } from '@mui/material';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -34,16 +35,27 @@ export default function SignIn() {
   const [password, setPassword] = useState()
   const [userName, setUserName] = useState()
   const [textError, setTextError] = useState(false)
-  const verifyUser = (event) =>{
-    if(!textError && password.length > 4){
+  const [passError, setPassError] = useState(false)
+  const [alert, setAlert] = useState(false)
+  const [alertText, setAlertText] = useState()
+  
+  const verifyUser = async () =>{
+    
       const obj = {
         email : userName,
         password : password,
       }
-      dal.verifyUser(obj)
-      .then(res => console.log(res))
-      .catch(err => console.log(err))
-    }
+      const response = await dal.verifyUser(obj)
+      
+      if(response.data.result){
+        setAlert(false)
+        // e.view.location.pathname = '/secureRoute'
+      }
+      else{
+        setAlertText(response.data.msg)
+        setAlert(true)
+      }
+    
   }
   const validEmail = ()=>{
     let mailFormat =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -51,6 +63,10 @@ export default function SignIn() {
         setTextError(false)
     else
         setTextError(true)
+  }
+  
+  const validPass = ()=>{
+    password.length < 4 ? setPassError(true) : setPassError(false)
   }
 
   return (
@@ -92,7 +108,8 @@ export default function SignIn() {
               id="password"
               autoComplete="current-password"
               onChange={e => setPassword(e.target.value)}
-              // color = 'error'
+              onBlur = {validPass}
+              error = {passError}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -103,6 +120,7 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled = {textError || passError}
             >
               Sign In
             </Button>
@@ -120,6 +138,10 @@ export default function SignIn() {
             </Grid>
           </Box>
         </Box>
+        {
+          alert ?
+          <Alert severity='error'>{`${alertText}`}</Alert> : null
+        }
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>

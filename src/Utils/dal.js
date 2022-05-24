@@ -12,12 +12,12 @@ const createNewUser = async (obj) =>{
 }
 
 const verifyUser = async (obj) =>{
-    console.log("fron verifyUser\n" + obj)
     try{
-        await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/signin`,obj)
+        return await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/signin`,obj)
+        
     }
     catch(error){
-        console.error(error)
+        return error.response
     }
 }
 
@@ -25,10 +25,10 @@ const resetPass = async (obj) =>{
     try{
         return await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/resetpassword`,obj)
         
-        
     }
     catch(error){
-        return error
+        return error.response
+        
     }
 }
 
@@ -39,7 +39,7 @@ const changePassword = async (obj) =>{
         
     }
     catch(error){
-        return error
+        return error.response
     }
 }
 
