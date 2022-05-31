@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import dal from '../Utils/dal'
+import DAL from '../Utils/DAL'
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -42,7 +42,7 @@ export default function ChangePassword(props) {
         email : props.data,
         newPassword : newPassword,
     }
-    const updated = await dal.changePassword(obj)
+    const updated = await DAL.changePassword(obj)
     
     if(updated.data.result)
       e.view.location.pathname = '/'

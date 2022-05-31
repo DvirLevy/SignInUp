@@ -12,9 +12,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import dal from '../Utils/dal'
+import DAL from '../Utils/DAL'
+import { Alert } from '@mui/material';
+import authService from '../Utils/authService';
 
-function Copyright(props) {
+function Copyright(props) { 
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
@@ -39,14 +41,15 @@ export default function SignUp() {
   const [lastName, setLastName] = useState()
   const [password, setPassword] = useState()
   const [allowPromotions, setAlowPromotions] = useState(false)
+  const [alert, setAlert] = useState(false)
+  const [alertText, setAlertText] = useState()
 
   let promotionHandler = ()=>{
     allowPromotions ? setAlowPromotions(false) : setAlowPromotions(true)
   }
   
-  const createUser = (event) =>{
-    event.preventDefault()
-    console.log("submit clicked")
+  const createUser = async (e) =>{
+    e.preventDefault()
     const obj = {
       firstName : firstName,
       lastName : lastName,
@@ -54,10 +57,18 @@ export default function SignUp() {
       password : password,
       allowPromotions : allowPromotions
     }
-    console.log(firstName , lastName , email , password , allowPromotions)
-    dal.createNewUser(obj)
-    .then(res => console.log(res))
-    .catch(err => console.log(err))
+    const response = await DAL.createNewUser(obj)
+    console.log(response.data)
+    
+    if(response.data.result){
+      setAlert(false)
+      authService.setToken(response.data.token)
+      e.view.location.pathname = '/MainPage'
+    }
+    else{
+      setAlertText(response.data.msg)
+      setAlert(true)
+    }
   }
 
 
@@ -86,6 +97,7 @@ export default function SignUp() {
                   autoComplete="given-name"
                   required
                   fullWidth
+                  label = "First Name"
                   id="firstName"
                   autoFocus
                   onChange = {e => setFirstName(e.target.value)}
@@ -95,6 +107,7 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
+                  label = "Last Name"
                   id="lastName"
                   autoComplete="family-name"
                   onChange = {e => setLastName(e.target.value)}
@@ -104,6 +117,7 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
+                  label = "Email"
                   id="email"
                   autoComplete="email"
                   onChange={e => setEmail(e.target.value)}
@@ -113,6 +127,7 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
+                  label = "Password"
                   id="password"
                   autoComplete="new-password"
                   onChange = {e => setPassword(e.target.value)}
@@ -142,6 +157,10 @@ export default function SignUp() {
               </Grid>
             </Grid>
           </Box>
+          {
+          alert ?
+          <Alert severity='error'>{`${alertText}`}</Alert> : null
+          }
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>

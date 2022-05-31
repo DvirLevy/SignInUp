@@ -12,8 +12,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import dal from '../Utils/dal'
+import DAL from '../Utils/DAL'
 import { Alert } from '@mui/material';
+import authService from '../Utils/authService';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -39,17 +40,17 @@ export default function SignIn() {
   const [alert, setAlert] = useState(false)
   const [alertText, setAlertText] = useState()
   
-  const verifyUser = async () =>{
-    
+  const verifyUser = async (e) =>{
       const obj = {
         email : userName,
         password : password,
       }
-      const response = await dal.verifyUser(obj)
-      
+      const response = await DAL.verifyUser(obj)
+        console.log(response.data.result)
       if(response.data.result){
         setAlert(false)
-        // e.view.location.pathname = '/secureRoute'
+        authService.setToken(response.data.token)
+        e.view.location.pathname = '/MainPage'
       }
       else{
         setAlertText(response.data.msg)
@@ -58,8 +59,9 @@ export default function SignIn() {
     
   }
   const validEmail = ()=>{
-    let mailFormat =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if(userName.match(mailFormat))
+    // eslint-disable-next-line no-useless-escape
+    let mailFormat =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    if(userName.match(mailFormat)) ///throws error if the mail is empty means the noting to match - input needs to be validating and not trying to check a empty input
         setTextError(false)
     else
         setTextError(true)

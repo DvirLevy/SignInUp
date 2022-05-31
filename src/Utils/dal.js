@@ -1,13 +1,37 @@
 import axios from 'axios'
+import authService from './authService'
+
+
+axios.interceptors.request.use(req =>{
+    
+    const token = authService.getToken()
+    if(token != null)
+        req.headers = {...req.headers , "x-access-token" : token} 
+    
+    return req
+})
+
+
+const resetPass = async (obj) =>{
+    try{
+        return await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/resetpassword`,obj)
+        
+    }
+    catch(error){
+        return error.response
+        
+    }
+}
+
+
 
 
 const createNewUser = async (obj) =>{
-    console.log("fron createUser\n" + obj)
     try{
-        await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/signup`,obj)
+        return await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/signup`,obj)
     }
     catch(error){
-        console.error(error)
+        return (error)
     }
 }
 
@@ -21,16 +45,7 @@ const verifyUser = async (obj) =>{
     }
 }
 
-const resetPass = async (obj) =>{
-    try{
-        return await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/resetpassword`,obj)
-        
-    }
-    catch(error){
-        return error.response
-        
-    }
-}
+
 
 const changePassword = async (obj) =>{
     try{
@@ -43,8 +58,16 @@ const changePassword = async (obj) =>{
     }
 }
 
+const isAuthenticated = async () =>{
+    try{
+        return await axios.get(`${process.env.REACT_APP_SERVER_URL}/api/auth`)
+    }
+    catch(error){
+        return error.response
+    }
+}
 
 
 
 // eslint-disable-next-line
-export default { createNewUser , verifyUser , resetPass, changePassword } 
+export default { createNewUser , verifyUser , resetPass, changePassword , isAuthenticated} 

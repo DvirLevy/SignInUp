@@ -11,7 +11,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import dal from '../Utils/dal'
+import DAL from '../Utils/DAL'
 import ChangePassword from './ChangePassword';
 
 function Copyright(props) {
@@ -41,7 +41,7 @@ const ForgotPassword =  (props) => {
         email : userName
         }
 
-        const response = await dal.resetPass(obj)
+        const response = await DAL.resetPass(obj)
         if(response.status === 404)
           setUserNotFound(true)
         else{
