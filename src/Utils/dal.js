@@ -6,7 +6,7 @@ axios.interceptors.request.use(req =>{
     
     const token = authService.getToken()
     if(token != null)
-        req.headers = {...req.headers , "x-access-token" : token} 
+        req.headers = {...req.headers , "x-access-token" : token, "Content-type" : "application/json"} 
     
     return req
 })

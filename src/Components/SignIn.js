@@ -15,6 +15,10 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DAL from '../Utils/DAL'
 import { Alert } from '@mui/material';
 import authService from '../Utils/authService';
+import InputAdornment from '@mui/material/InputAdornment'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import IconButton from '@mui/material/IconButton'
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -33,12 +37,15 @@ const theme = createTheme();
 export default function SignIn() {
 
 
-  const [password, setPassword] = useState()
+  const [password, setPassword] = useState('')
   const [userName, setUserName] = useState()
-  const [textError, setTextError] = useState(false)
-  const [passError, setPassError] = useState(false)
+  
   const [alert, setAlert] = useState(false)
   const [alertText, setAlertText] = useState()
+  const [textErrorPwd , setTextErrorPwd] = useState()
+  const [textErrorEmail , setTextErrorEmail] = useState()
+  const [showPassword, setShowPassword] = useState(false)
+  const [textType , setTextType] = useState("password")
   
   const verifyUser = async (e) =>{
       const obj = {
@@ -58,17 +65,42 @@ export default function SignIn() {
       }
     
   }
-  const validEmail = ()=>{
+  const validEmail = (mail)=>{
     // eslint-disable-next-line no-useless-escape
-    let mailFormat =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    if(userName.match(mailFormat)) ///throws error if the mail is empty means the noting to match - input needs to be validating and not trying to check a empty input
-        setTextError(false)
+    const regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
+    if(regex.test(mail)) 
+        return false
     else
-        setTextError(true)
+        return true
   }
-  
+
+  const validTextHandler = async (id) =>{
+    switch (id) {
+      case "email":
+        setTextErrorEmail(await validEmail(userName))
+        break;
+      case "password":
+        setTextErrorPwd(await validPass(password))
+        break;
+      default:
+        break;
+    }
+  }
   const validPass = ()=>{
-    password.length < 4 ? setPassError(true) : setPassError(false)
+    if(password.length > 3)
+      return false
+    else
+      return true
+  }
+  const showPwd = () =>{
+    if(showPassword){
+      setTextType("password")
+      setShowPassword(false)
+    }
+    else{
+      setTextType("text")
+      setShowPassword(true)
+    }
   }
 
   return (
@@ -92,26 +124,34 @@ export default function SignIn() {
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
-              required
               fullWidth
               label = "email"
               id="email"
               autoComplete="email"
-              
               onChange={e => setUserName(e.target.value)}
-              onBlur = {validEmail}
-              error = {textError}
+              onBlur = {e => validTextHandler(e.target.id)}
+              error = {textErrorEmail}
             />
             <TextField
+              type={textType}
               margin="normal"
-              required = {true}
               fullWidth
               label = "Password"
               id="password"
               autoComplete="current-password"
               onChange={e => setPassword(e.target.value)}
-              onBlur = {validPass}
-              error = {passError}
+              onBlur = {e => validTextHandler(e.target.id)}
+              error = {textErrorPwd}
+              InputProps ={{
+                endAdornment :
+                  <InputAdornment position='end'>
+                    <IconButton onClick={showPwd} edge="end">
+                      {
+                        showPassword ? <VisibilityOff /> : <Visibility />
+                      }
+                    </IconButton>
+                  </InputAdornment>
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -122,7 +162,7 @@ export default function SignIn() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              disabled = {textError || passError}
+              disabled = {textErrorEmail || textErrorPwd}
             >
               Sign In
             </Button>
