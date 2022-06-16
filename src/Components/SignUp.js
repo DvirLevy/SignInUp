@@ -54,6 +54,7 @@ export default function SignUp() {
   const [textErrorPwd , setTextErrorPwd] = useState()
   const [showPassword, setShowPassword] = useState(false)
   const [textType , setTextType] = useState("password")
+  const [showHelperText, setShowHelperText] = useState(false)
 
   let promotionHandler = ()=>{
     allowPromotions ? setAlowPromotions(false) : setAlowPromotions(true)
@@ -82,13 +83,25 @@ export default function SignUp() {
     }
   }
 
-  const validEmail = (mail)=>{
+  const validEmail = async(mail)=>{
     // eslint-disable-next-line no-useless-escape
     const regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
-    if(regex.test(mail))
-      return false
+    
+    if(regex.test(mail)){
+      
+      const obj = {email : email}
+      const response = await DAL.emailExist(obj)
+      if(response.data.result){
+        setShowHelperText(true)    
+        return true
+      }
+      else{
+        setShowHelperText(false)
+        return false  
+      }
+    }
     else
-      return true
+      return false    
   }
   const validTextHandler = async (id) =>{
     // debugger
@@ -136,8 +149,6 @@ export default function SignUp() {
       setShowPassword(true)
     }
   }
-
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -188,8 +199,9 @@ export default function SignUp() {
                   id="email"
                   autoComplete="email"
                   onChange={e => setEmail(e.target.value)}
-                  onBlur= {e => validTextHandler(e.target.id)}
+                  onBlur= {e => validTextHandler(e.target.id)} //if valid check on DB
                   error = {textErrorEmail}
+                  helperText ={showHelperText ? 'email already exist' : null}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -208,7 +220,7 @@ export default function SignUp() {
                       <InputAdornment position='end'>
                         <IconButton onClick={showPwd} edge="end">
                           {
-                            showPassword ? <VisibilityOff /> : <Visibility />
+                            showPassword ? <Visibility /> : <VisibilityOff />
                           }
                         </IconButton>
                       </InputAdornment>
