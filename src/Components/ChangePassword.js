@@ -13,6 +13,10 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import DAL from '../Utils/DAL'
+import InputAdornment from '@mui/material/InputAdornment'
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import IconButton from '@mui/material/IconButton'
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -30,10 +34,15 @@ const theme = createTheme();
 
 export default function ChangePassword(props) {
 
-    const [currentPassword, setCurrentPassword] = useState()
-    const [newPassword, setNewPassword] = useState()
-    const [verifyPassword, setVerifyPassword] = useState()
-    const [textError, setTextError] = useState(false)
+    const [currentPassword, setCurrentPassword] = useState('')
+    const [newPassword, setNewPassword] = useState(false)
+    const [verifyPassword, setVerifyPassword] = useState(false)
+    
+    const [showPassword, setShowPassword] = useState(false)
+    const [textType , setTextType] = useState("password")
+    const [currPwdError , setCurrPwdError] = useState(false)
+    const [newPwdError , setNewPwdError] = useState(false)
+    const [veriPwdError , setVeriPwdError] = useState(false)
     
   const changePassword = async (e) =>{
     
@@ -51,14 +60,58 @@ export default function ChangePassword(props) {
   }
 
   const passwordMatcher = () =>{
-      if(!(newPassword === verifyPassword)){
-        setTextError(true)
+      if(newPassword === verifyPassword)
         return false
-      }
-      else{
-        setTextError(false)
+      else
         return true
-      }
+  }
+
+
+  const validPwd = (pwd) =>{
+    const regex = new RegExp(/[a-zA-Z0-9]{6,}/)
+    if(regex.test(pwd))
+      return false
+    else
+      return true
+  }
+
+  const validCurrPwd = ()=>{
+    if(currentPassword.length < 8)
+      return true
+    else
+      return false
+  }
+
+  const validTextHandler = async (id) =>{
+    // debugger
+    switch (id) {
+      case "currentPwd":
+        setCurrPwdError(await validCurrPwd(currentPassword))
+        break;
+        
+      case "verifyPassword":
+        setVeriPwdError(passwordMatcher)
+        // eslint-disable-next-line no-fallthrough
+      case "newPassword":
+        setNewPwdError(((await validPwd(newPassword) || await passwordMatcher)))
+        break;
+        
+
+
+      default:
+        break;
+    }
+  }
+
+  const showPwd = () =>{
+    if(showPassword){
+      setTextType("password")
+      setShowPassword(false)
+    }
+    else{
+      setTextType("text")
+      setShowPassword(true)
+    }
   }
 
   return (
@@ -81,30 +134,47 @@ export default function ChangePassword(props) {
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
           <TextField
+              type ="password"
               margin="normal"
-              required
+              id="currentPwd"
               fullWidth
               label = "Current Password"
               autoComplete="current-password"
               onChange={e => setCurrentPassword(e.target.value)}
+              onBlur = {e => validTextHandler(e.target.id)}
+              error = {currPwdError}
             />
             <TextField
+              type = {textType}
               margin="normal"
-              required
               fullWidth
               label = "New Password"
               id="newPassword"
               onChange={e => setNewPassword(e.target.value)}
+              onBlur = {e => {validTextHandler(e.target.id)}}
+              error = {newPwdError}
+              helperText={"Must contain at least one lower case, upper case and 4 digits"}
+              InputProps ={{
+                endAdornment :
+                  <InputAdornment position='end'>
+                    <IconButton onClick={showPwd} edge="end">
+                      {
+                        showPassword ? <VisibilityOff /> : <Visibility />
+                      }
+                    </IconButton>
+                  </InputAdornment>
+              }}
             />
              <TextField
+              type = "password"
               margin="normal"
               required
               fullWidth
               label = "Verify Password"
               id="verifyPassword"
               onChange={e => setVerifyPassword(e.target.value)}
-              onBlur={passwordMatcher}
-              error = {textError}
+              onBlur={e => {validTextHandler(e.target.id)}}
+              error = {veriPwdError}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -115,7 +185,7 @@ export default function ChangePassword(props) {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               onClick = {changePassword}
-              disabled = {textError}
+              disabled = {currPwdError || newPwdError || veriPwdError}
             >
               Change Password
             </Button>

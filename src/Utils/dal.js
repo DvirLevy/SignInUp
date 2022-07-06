@@ -6,7 +6,7 @@ axios.interceptors.request.use(req =>{
     
     const token = authService.getToken()
     if(token != null)
-        req.headers = {...req.headers , "x-access-token" : token} 
+        req.headers = {...req.headers , "x-access-token" : token, "Content-type" : "application/json"} 
     
     return req
 })
@@ -67,7 +67,15 @@ const isAuthenticated = async () =>{
     }
 }
 
+const emailExist = async (obj) =>{
+    try{
+        return await axios.post(`${process.env.REACT_APP_SERVER_URL}/api/checkEmail`,obj)
+    }
+    catch(error){
+        return error.response
+    }
+}
 
 
 // eslint-disable-next-line
-export default { createNewUser , verifyUser , resetPass, changePassword , isAuthenticated} 
+export default { createNewUser , verifyUser , resetPass, changePassword , isAuthenticated , emailExist} 
