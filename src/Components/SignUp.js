@@ -61,7 +61,7 @@ export default function SignUp() {
   }
   
   const createUser = async (e) =>{
-    e.preventDefault()
+    
     const obj = {
       firstName : firstName,
       lastName : lastName,
