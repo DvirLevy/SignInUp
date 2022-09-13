@@ -35,8 +35,8 @@ const theme = createTheme();
 export default function ChangePassword(props) {
 
     const [currentPassword, setCurrentPassword] = useState('')
-    const [newPassword, setNewPassword] = useState(false)
-    const [verifyPassword, setVerifyPassword] = useState(false)
+    const [newPassword, setNewPassword] = useState('')
+    const [verifyPassword, setVerifyPassword] = useState('')
     
     const [showPassword, setShowPassword] = useState(false)
     const [textType , setTextType] = useState("password")
@@ -51,6 +51,7 @@ export default function ChangePassword(props) {
         email : props.data,
         newPassword : newPassword,
     }
+    console.log(obj)
     const updated = await DAL.changePassword(obj)
     
     if(updated.data.result)
@@ -70,7 +71,7 @@ export default function ChangePassword(props) {
   const validPwd = (pwd) =>{
     const regex = new RegExp(/[a-zA-Z0-9]{6,}/)
     if(regex.test(pwd))
-      return false
+      return false //return false unless it's valid because it trigger the error attribute
     else
       return true
   }
@@ -91,9 +92,10 @@ export default function ChangePassword(props) {
         
       case "verifyPassword":
         setVeriPwdError(passwordMatcher)
+        break
         // eslint-disable-next-line no-fallthrough
       case "newPassword":
-        setNewPwdError(((await validPwd(newPassword) || await passwordMatcher)))
+        setNewPwdError(await validPwd(newPassword))
         break;
         
 

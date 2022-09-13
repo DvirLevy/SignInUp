@@ -42,7 +42,8 @@ const ForgotPassword =  (props) => {
         }
 
         const response = await DAL.resetPass(obj)
-        if(response.status === 404)
+        console.log(response)
+        if(response.status === 404) //response.status
           setUserNotFound(true)
         else{
           setResponseEmail(response.data.email)
